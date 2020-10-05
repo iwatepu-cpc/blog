@@ -1,5 +1,5 @@
 baseURL = "https://iwatepu-cpc.github.io/blog/"
 languageCode = "ja-JP"
 title = "岩手県立大学プログラミングサークル"
-theme = "liva-hugo"
+theme = "tale"
 publishDIr = "docs"
