@@ -5,7 +5,7 @@
 hugo new posts/<記事のファイル名>.md
 
 # 記事MDを編集
-code posts/<記事のファイル名>.md
+code content/posts/<記事のファイル名>.md
 
 # 記事MDからHTML生成
 hugo
