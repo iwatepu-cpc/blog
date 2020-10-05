@@ -11,6 +11,8 @@ draft: false
 公式からはC/C++のヘッダーファイルが提供され、他言語からも扱いやすくなっている。
 ここで筆者は有志が作成したCommon Lisp向けのバインディング([3b/cl-vulkan](https://github.com/3b/cl-vulkan))を使おうと考えたが、READMEにはTODOが並び、3年前で更新が止まっている。どうにか自力でバインディングを生やしたい。
 
+<!--more-->
+
 Vulkanからはvk.xmlというAPIのインデックスのようなものも提供されており、既存のバインディングはこれをパースして自動生成しているらしい。今回はCFFIの書き方を理解するため、手動でバインディングを生成する。
 
 CFFI(The Common Foreign Function Interface)はCommon Lispの処理系依存を吸収し、統一されたAPIで他言語で作成されたライブラリの関数等を呼び出すためのライブラリである。FFIはCommon Lispの言語仕様の範疇ではないため、処理系毎に独自実装されているのだ。

@@ -17,21 +17,10 @@
       <pubDate>Mon, 05 Oct 2020 22:03:18 +0900</pubDate>
       
       <guid>https://iwatepu-cpc.github.io/blog/posts/cl-cffi-vulkan_0/</guid>
-      <description>はじめに 仕様がオープンなグラフィックスAPI「Vulkan」がKhronos Groupから発表されて数年経つ。 公式からはC/C++のヘッダーファイルが提供され、他言語からも扱いやすくなっている。 ここで筆者は有志が作成したCommon Lisp向けのバインディング(3b/cl-vulkan)を使おうと考えたが、READMEにはTODOが並び、3年前で更新が止まっている。どうにか自力でバインディングを生やしたい。
-Vulkanからはvk.xmlというAPIのインデックスのようなものも提供されており、既存のバインディングはこれをパースして自動生成しているらしい。今回はCFFIの書き方を理解するため、手動でバインディングを生成する。
-CFFI(The Common Foreign Function Interface)はCommon Lispの処理系依存を吸収し、統一されたAPIで他言語で作成されたライブラリの関数等を呼び出すためのライブラリである。FFIはCommon Lispの言語仕様の範疇ではないため、処理系毎に独自実装されているのだ。
-準備 普段使っているLinuxマシンではなく、ろくに環境構築していないWindows PC上でこれを書いているため、新たにCommon Lispの開発環境を準備する。
-まずは処理系をインストールする。近年のモダンなプログラミング言語では処理系管理ツールが盛んに利用されているが、有難いことにCommon Lispにも同様なツールが存在する。Roswellという。名前は、&amp;ldquo;made with secret alien technology&amp;quot;というCommon Lispの(誰が言い出したのかは知らない)キャッチフレーズと、そこから連想されるロズウェルUFO事件に由来する。
-RoswellはInstallation Guideを見ながらインストールした。Scoopは使わず、zipファイルをD:\roswellに展開してパスを通した。
-これでRoswellによってCommon Lisp処理系のインストールが出来るようになったので、とりあえず最新のSBCL(2.0.0)をインストールする。
-ros install sbcl-bin 以下のようにInitial Recommended Setupを済ませる。
-code C:\Users\tamam\AppData\Local\config\common-lisp\source-registry.conf (:source-registry (:tree &amp;#34;/Users/tamam/.roswell/lisp/quicklisp/dists/quicklisp/software/&amp;#34;) :INHERIT-CONFIGURATION) CFFIを使うので、Roswellからインストールする。
-ros install cffi CFFIからVulkanを触るにはvulkan-1.dllが必要だが、これはGPUドライバと一緒にインストールされる。筆者環境ではC:\Windows\System32\vulkan-1.dllに格納されていた。
-Vulkan Loaderのライブラリを読み込む まずはCFFIでvulkan-1.dllを読み込む。
-(ql:quickload :cffi) (defpackage vkffi (:use :cl :cffi)) (in-package vkffi) (define-foreign-library vulkan (:windows &amp;#34;vulkan-1.dll&amp;#34;)) (use-foreign-library vulkan) ここまでを実行してエラーが表示されなければ問題ない。
-実行する関数のシグネチャをチェック 今回はvkEnumerateInstanceExtensionPropertiesを実行してみる。これはレイヤー毎に有効化可能な拡張の一覧を取得する関数である。
-マニュアルを読むと、戻り値がVkResult型で、引数にconst char*とuint32_tとVkExtensionProperties*を取ることが示されている。CFFIではビルトイン型は当然扱えるため、そうでないものに注目する。
- VkResult VkExtensionProperties  それぞれ列挙型と構造体であることが分かる。まずはこれをCFFIで定義する。名前は合わせなくても良い。</description>
+      <description>&lt;h2 id=&#34;はじめに&#34;&gt;はじめに&lt;/h2&gt;
+&lt;p&gt;仕様がオープンなグラフィックスAPI「Vulkan」がKhronos Groupから発表されて数年経つ。
+公式からはC/C++のヘッダーファイルが提供され、他言語からも扱いやすくなっている。
+ここで筆者は有志が作成したCommon Lisp向けのバインディング(&lt;a href=&#34;https://github.com/3b/cl-vulkan&#34;&gt;3b/cl-vulkan&lt;/a&gt;)を使おうと考えたが、READMEにはTODOが並び、3年前で更新が止まっている。どうにか自力でバインディングを生やしたい。&lt;/p&gt;</description>
     </item>
     
     <item>
