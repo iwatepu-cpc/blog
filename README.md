@@ -26,5 +26,12 @@ draft: false
 
 ```
 
+画像は`content/images/path to image`として置いてください。
+以下のように記述すると表示されます。
+
+```md
+![alt](/blog/images/path to image)
+```
+
 生成後は`git add`, `git commit`, `git push`してデプロイしましょう。  
 反映には数分時間が掛かることがあります。
