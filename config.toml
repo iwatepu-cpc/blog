@@ -3,3 +3,17 @@ languageCode = "ja-JP"
 title = "岩手県立大学プログラミングサークル"
 theme = "tale"
 publishDIr = "docs"
+
+[menu]
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    title = "About"
+    url = "/about/"
+    weight = 0
+  [[menu.main]]
+    identifier = "posts"
+    name = "投稿"
+    title = "投稿"
+    url = "/posts/"
+    weight = 0
