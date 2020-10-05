@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Common LispでCFFIでVulkanのAPIを呼ぶ &middot; 岩手県立大学プログラミングサークル</title>
+
+		
+  		<link rel="stylesheet" href="/blog/css/style.css">
+		<link rel="stylesheet" href="/blog/css/fonts.css">
+		
+		<link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="岩手県立大学プログラミングサークル" />
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/blog/">
+					<h2 class="nav-title">岩手県立大学プログラミングサークル</h2>
+				</a>
+				<ul>
+    
+    
+        <li>
+            <a href="/blog/about/">
+                
+                <span>About</span>
+                
+            </a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/">
+                
+                <span>投稿</span>
+                
+            </a>
+        </li>
+    
+</ul>
+			</div>
+		</nav>
+
+        
+
+<main>
+	<div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        cddadr
+        <br>
+        <span>on&nbsp;</span><time datetime="2020-10-05 22:03:18 &#43;0900 JST">October 5, 2020</time>
+</div>
+
+		<h1 class="post-title">Common LispでCFFIでVulkanのAPIを呼ぶ</h1>
+<div class="post-line"></div>
+
+		
+
+		<h2 id="はじめに">はじめに</h2>
+<p>仕様がオープンなグラフィックスAPI「Vulkan」がKhronos Groupから発表されて数年経つ。
+公式からはC/C++のヘッダーファイルが提供され、他言語からも扱いやすくなっている。
+ここで筆者は有志が作成したCommon Lisp向けのバインディング(<a href="https://github.com/3b/cl-vulkan">3b/cl-vulkan</a>)を使おうと考えたが、READMEにはTODOが並び、3年前で更新が止まっている。どうにか自力でバインディングを生やしたい。</p>
+<p>Vulkanからはvk.xmlというAPIのインデックスのようなものも提供されており、既存のバインディングはこれをパースして自動生成しているらしい。今回はCFFIの書き方を理解するため、手動でバインディングを生成する。</p>
+<p>CFFI(The Common Foreign Function Interface)はCommon Lispの処理系依存を吸収し、統一されたAPIで他言語で作成されたライブラリの関数等を呼び出すためのライブラリである。FFIはCommon Lispの言語仕様の範疇ではないため、処理系毎に独自実装されているのだ。</p>
+<h2 id="準備">準備</h2>
+<p>普段使っているLinuxマシンではなく、ろくに環境構築していないWindows PC上でこれを書いているため、新たにCommon Lispの開発環境を準備する。</p>
+<p>まずは処理系をインストールする。近年のモダンなプログラミング言語では処理系管理ツールが盛んに利用されているが、有難いことにCommon Lispにも同様なツールが存在する。<a href="https://github.com/roswell/roswell">Roswell</a>という。名前は、&ldquo;made with secret alien technology&quot;というCommon Lispの(誰が言い出したのかは知らない)キャッチフレーズと、そこから連想されるロズウェルUFO事件に由来する。</p>
+<p>Roswellは<a href="https://github.com/roswell/roswell/wiki/Installation">Installation Guide</a>を見ながらインストールした。Scoopは使わず、zipファイルをD:\roswellに展開してパスを通した。</p>
+<p>これでRoswellによってCommon Lisp処理系のインストールが出来るようになったので、とりあえず最新のSBCL(2.0.0)をインストールする。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">ros install sbcl-bin
+</code></pre></div><p>以下のように<a href="https://github.com/roswell/roswell/wiki/Initial-Recommended-Setup">Initial Recommended Setup</a>を済ませる。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">code C:\Users\tamam\AppData\Local\config\common-lisp\source-registry.conf
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(<span style="color:#e6db74">:source-registry</span>
+  (<span style="color:#e6db74">:tree</span> <span style="color:#e6db74">&#34;/Users/tamam/.roswell/lisp/quicklisp/dists/quicklisp/software/&#34;</span>)
+  <span style="color:#e6db74">:INHERIT-CONFIGURATION</span>)
+</code></pre></div><p><a href="https://github.com/cffi/cffi">CFFI</a>を使うので、Roswellからインストールする。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">ros install cffi
+</code></pre></div><p>CFFIからVulkanを触るには<code>vulkan-1.dll</code>が必要だが、これはGPUドライバと一緒にインストールされる。筆者環境では<code>C:\Windows\System32\vulkan-1.dll</code>に格納されていた。</p>
+<h2 id="vulkan-loaderのライブラリを読み込む">Vulkan Loaderのライブラリを読み込む</h2>
+<p>まずはCFFIで<code>vulkan-1.dll</code>を読み込む。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(ql:quickload <span style="color:#e6db74">:cffi</span>)
+
+(defpackage vkffi
+  (<span style="color:#e6db74">:use</span> <span style="color:#e6db74">:cl</span> <span style="color:#e6db74">:cffi</span>))
+
+(in-package vkffi)
+
+(define-foreign-library vulkan
+			(<span style="color:#e6db74">:windows</span> <span style="color:#e6db74">&#34;vulkan-1.dll&#34;</span>))
+
+(use-foreign-library vulkan)
+</code></pre></div><p>ここまでを実行してエラーが表示されなければ問題ない。</p>
+<h2 id="実行する関数のシグネチャをチェック">実行する関数のシグネチャをチェック</h2>
+<p>今回は<a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/vkEnumerateInstanceExtensionProperties.html"><code>vkEnumerateInstanceExtensionProperties</code></a>を実行してみる。これはレイヤー毎に有効化可能な拡張の一覧を取得する関数である。</p>
+<p>マニュアルを読むと、戻り値が<code>VkResult</code>型で、引数に<code>const char*</code>と<code>uint32_t</code>と<code>VkExtensionProperties*</code>を取ることが示されている。CFFIではビルトイン型は当然扱えるため、そうでないものに注目する。</p>
+<ul>
+<li><a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkResult.html">VkResult</a></li>
+<li><a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkExtensionProperties.html">VkExtensionProperties</a></li>
+</ul>
+<p>それぞれ列挙型と構造体であることが分かる。まずはこれをCFFIで定義する。名前は合わせなくても良い。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(defcenum vk-result
+  (<span style="color:#e6db74">:VK_SUCCESS</span> <span style="color:#ae81ff">0</span>)
+  (<span style="color:#e6db74">:VK_NOT_READY</span>  <span style="color:#ae81ff">1</span>)
+  <span style="color:#75715e">;; 略</span>
+  (<span style="color:#e6db74">:VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS_KHR</span>  <span style="color:#ae81ff">-1000257000</span>)
+  (<span style="color:#e6db74">:VK_ERROR_PIPELINE_COMPILE_REQUIRED_EXT</span>  <span style="color:#ae81ff">1000297000</span>))
+
+(defcstruct vk-extension-properties
+	    (extension-name <span style="color:#e6db74">:char</span> <span style="color:#e6db74">:count</span> <span style="color:#ae81ff">256</span>) <span style="color:#75715e">; VK_MAX_EXTENSION_NAME_SIZE = 256</span>
+	    (spec-version <span style="color:#e6db74">:uint32</span>))
+</code></pre></div><p>次に呼び出す外部関数を定義する。正確な関数名が必要なのでtypoに注意すること。引数は順番が重要であるため、名前は何でも良い。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(defcfun (<span style="color:#e6db74">&#34;vkEnumerateInstanceExtensionProperties&#34;</span> vk-enumerate-instance-extension-properties) vk-result
+	 (p-layer-name (<span style="color:#e6db74">:pointer</span> <span style="color:#e6db74">:char</span>))
+	 (p-property-count (<span style="color:#e6db74">:pointer</span> <span style="color:#e6db74">:uint32</span>))
+	 (p-properties (<span style="color:#e6db74">:pointer</span> (<span style="color:#e6db74">:struct</span> vk-extension-properties))))
+</code></pre></div><h2 id="実行する">実行する</h2>
+<p><code>vkEnumerateInstanceExtensionProperties</code>は第一引数にNULLを指定すると、Vulkanの実装から提供されるレイヤーと暗黙で有効になっているレイヤーの拡張を取得するようになる。また第三引数にNULLを指定すると、存在する拡張の数を第二引数に指定したポインタの参照先に格納される。</p>
+<p>まずは拡張の数を取得する。<code>with-foreign-object</code>で格納先の<code>uint32</code>型変数を用意する。これは自動でポインタとなるため、値の参照には<code>mem-ref</code>を使う。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(with-foreign-object (%extension-count <span style="color:#e6db74">:uint32</span>)
+                     (<span style="color:#a6e22e">format</span> <span style="color:#66d9ef">t</span> <span style="color:#e6db74">&#34;vkEnumerateInstanceExtensionProperties(nullptr, &amp;extensionCount, nullptr) ... ~a~%&#34;</span>
+                             (vk-enumerate-instance-extension-properties (null-pointer) %extension-count (null-pointer)))
+                     (<span style="color:#a6e22e">format</span> <span style="color:#66d9ef">t</span> <span style="color:#e6db74">&#34;~a extensions supported~%&#34;</span> (mem-ref %extension-count <span style="color:#e6db74">:uint32</span>)))
+</code></pre></div><p>筆者環境では以下の出力を得た。</p>
+<pre><code>vkEnumerateInstanceExtensionProperties(nullptr, &amp;extensionCount, nullptr) ... VK_SUCCESS
+13 extensions supported
+</code></pre><p>次に拡張のプロパティを取得する。これは第三引数に<code>VkExtensionProperties</code>型配列へのポインタを渡せば良い。配列のサイズは先ほど得た拡張の数とする。配列は<code>mem-aref</code>によって添字アクセスし、構造体は<code>getf</code>によってフィールド名を指定して値を引き出すことが出来る。<code>char</code>型の配列は<code>convert-from-foreign</code>で変換先の型に<code>:string</code>を指定することでLispで扱える文字列に変換する。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(with-foreign-object (%extension-count <span style="color:#e6db74">:uint32</span>)
+                     (vk-enumerate-instance-extension-properties (null-pointer) %extension-count (null-pointer))
+                     (<span style="color:#66d9ef">let</span> ((extension-count (mem-ref %extension-count <span style="color:#e6db74">:uint32</span>)))
+                       (<span style="color:#a6e22e">format</span> <span style="color:#66d9ef">t</span> <span style="color:#e6db74">&#34;~a extensions supported~%&#34;</span> extension-count)
+                       (with-foreign-object (%extension-properties <span style="color:#f92672">&#39;</span>(<span style="color:#e6db74">:struct</span> vk-extension-properties) extension-count)
+                                            (<span style="color:#a6e22e">format</span> <span style="color:#66d9ef">t</span> <span style="color:#e6db74">&#34;vkEnumerateInstanceExtensionProperties(nullptr, &amp;extensionCount, &amp;extensionProperties) ... ~a~%&#34;</span>
+                                            (vk-enumerate-instance-extension-properties (null-pointer) %extension-count %extension-properties))
+                                            (<span style="color:#66d9ef">let</span> ((extension-properties
+                                                   (loop for i below extension-count
+                                                         collect (mem-aref %extension-properties <span style="color:#f92672">&#39;</span>(<span style="color:#e6db74">:struct</span> vk-extension-properties) i))))
+                                              (loop for ep in extension-properties
+                                                    do (<span style="color:#a6e22e">format</span> <span style="color:#66d9ef">t</span> <span style="color:#e6db74">&#34;~a - spec:~a~%&#34;</span>
+                                                               (convert-from-foreign (<span style="color:#a6e22e">getf</span> ep <span style="color:#e6db74">&#39;extension-name</span>) <span style="color:#e6db74">:string</span>)
+                                                               (<span style="color:#a6e22e">getf</span> ep <span style="color:#e6db74">&#39;spec-version</span>)))))))
+</code></pre></div><p>これで以下のような出力が得られる。</p>
+<pre><code>13 extensions supported
+vkEnumerateInstanceExtensionProperties(nullptr, &amp;extensionCount, &amp;extensionProperties) ... VK_SUCCESS
+VK_KHR_device_group_creation - spec:1
+VK_KHR_external_fence_capabilities - spec:1
+VK_KHR_external_memory_capabilities - spec:1
+VK_KHR_external_semaphore_capabilities - spec:1
+VK_KHR_get_physical_device_properties2 - spec:2
+VK_KHR_get_surface_capabilities2 - spec:1
+VK_KHR_surface - spec:25
+VK_KHR_surface_protected_capabilities - spec:1
+VK_KHR_win32_surface - spec:6
+VK_EXT_debug_report - spec:9
+VK_EXT_debug_utils - spec:1
+VK_EXT_swapchain_colorspace - spec:4
+VK_NV_external_memory_capabilities - spec:1
+</code></pre><h2 id="まとめ">まとめ</h2>
+<p>WindowsでCFFIを利用してCommon LispからVulkanの関数を呼び出すことが出来た。</p>
+<p>CFFIの詳しい使い方については本記事にて記載していないが、<a href="https://common-lisp.net/project/cffi/manual/cffi-manual.html">ユーザマニュアル</a>があるのでそちらを読むと良い。</p>
+
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/blog/posts/0/" class="left arrow">&#8592;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			
+			<span>
+			&copy; <time datetime="2020-10-05 22:05:40.6677982 &#43;0900 JST m=&#43;0.535533701">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>
