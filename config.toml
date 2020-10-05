@@ -1,0 +1,5 @@
+baseURL = "http://example.org/"
+languageCode = "js-JP"
+title = "岩手県立大学プログラミングサークル"
+theme = "liva-hugo"
+publishDIr = "docs"
