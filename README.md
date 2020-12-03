@@ -49,7 +49,7 @@ $ git submodule update --init --recursive
 $ hugo server -D
 ```
 
-上記のコマンドをうつと下記のように表示されると思う．  
+上記にコマンドをうつと下記のように表示されると思う．  
 ```
 ...
 Web Server is available at http://localhost:1313/blog/ (bind address 127.0.0.1)
