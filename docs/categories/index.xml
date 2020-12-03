@@ -5,10 +5,6 @@
     <link>https://iwatepu-cpc.github.io/blog/categories/</link>
     <description>Recent content in Categories on 岩手県立大学プログラミングサークル</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>ja-JP</language>
-    
-	<atom:link href="https://iwatepu-cpc.github.io/blog/categories/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <language>ja-JP</language><atom:link href="https://iwatepu-cpc.github.io/blog/categories/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
