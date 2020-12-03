@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>競技プログラミングサークル on 岩手県立大学プログラミングサークル</title>
+    <link>https://iwatepu-cpc.github.io/blog/tags/%E7%AB%B6%E6%8A%80%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E3%82%B5%E3%83%BC%E3%82%AF%E3%83%AB/</link>
+    <description>Recent content in 競技プログラミングサークル on 岩手県立大学プログラミングサークル</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-JP</language>
+    <lastBuildDate>Thu, 03 Dec 2020 16:32:10 +0900</lastBuildDate><atom:link href="https://iwatepu-cpc.github.io/blog/tags/%E7%AB%B6%E6%8A%80%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E3%82%B5%E3%83%BC%E3%82%AF%E3%83%AB/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Q:岩手県立大学プログラミングサークルとは？ A:闇の組織です．</title>
+      <link>https://iwatepu-cpc.github.io/blog/posts/what_is_iwatepu-programming-clab/</link>
+      <pubDate>Thu, 03 Dec 2020 16:32:10 +0900</pubDate>
+      
+      <guid>https://iwatepu-cpc.github.io/blog/posts/what_is_iwatepu-programming-clab/</guid>
+      <description>この記事は岩手県立大学 Advent Calendar 2020の3日目です．  岩手県立大学プログラミングサークルを紹介します．</description>
+    </item>
+    
+  </channel>
+</rss>
