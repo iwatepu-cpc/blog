@@ -4,6 +4,10 @@ date: 2020-12-03T16:32:10+09:00
 author: "竹田大将"
 tags: ["岩手", "岩手県立大学", "プログラミングサークル", "競技プログラミングサークル"]
 draft: false
+summary: "
+  この記事は岩手県立大学 Advent Calendar 2020の3日目です．  \
+  岩手県立大学プログラミングサークルを紹介します．
+  "
 ---
 
 この記事は[岩手県立大学 Advent Calendar 2020](https://qiita.com/advent-calendar/2020/ipu)の3日目です．  
