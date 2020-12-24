@@ -6,7 +6,16 @@
     <description>Recent content in 競技プログラミングサークル on 岩手県立大学プログラミングサークル</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Fri, 11 Dec 2020 17:19:33 +0900</lastBuildDate><atom:link href="https://iwatepu-cpc.github.io/blog/tags/%E7%AB%B6%E6%8A%80%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E3%82%B5%E3%83%BC%E3%82%AF%E3%83%AB/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 24 Dec 2020 13:44:13 +0900</lastBuildDate><atom:link href="https://iwatepu-cpc.github.io/blog/tags/%E7%AB%B6%E6%8A%80%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E3%82%B5%E3%83%BC%E3%82%AF%E3%83%AB/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>atan2ってどう使うの？</title>
+      <link>https://iwatepu-cpc.github.io/blog/posts/how-to-use-atan2/</link>
+      <pubDate>Thu, 24 Dec 2020 13:44:13 +0900</pubDate>
+      
+      <guid>https://iwatepu-cpc.github.io/blog/posts/how-to-use-atan2/</guid>
+      <description>atan2をどう使うかについて触れます．</description>
+    </item>
+    
     <item>
       <title>プログラミングサークル沿革、またの名を自分語り</title>
       <link>https://iwatepu-cpc.github.io/blog/posts/history_of_iwatepu-programming-club/</link>

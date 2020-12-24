@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>atan2ってどう使うの？ &middot; 岩手県立大学プログラミングサークル</title>
+
+		
+  		<link rel="stylesheet" href="/blog/css/style.css">
+		<link rel="stylesheet" href="/blog/css/fonts.css">
+		
+		<link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="岩手県立大学プログラミングサークル" />
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/blog/">
+					<h2 class="nav-title">岩手県立大学プログラミングサークル</h2>
+				</a>
+				<ul>
+    
+    
+        <li>
+            <a href="/blog/about/">
+                
+                <span>About</span>
+                
+            </a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/">
+                
+                <span>投稿</span>
+                
+            </a>
+        </li>
+    
+</ul>
+			</div>
+		</nav>
+
+        
+
+<main>
+	<div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        tomatoaiu
+        <br>
+        <span>on&nbsp;</span><time datetime="2020-12-24 13:44:13 &#43;0900 JST">December 24, 2020</time>
+</div>
+
+		<h1 class="post-title">atan2ってどう使うの？</h1>
+<div class="post-line"></div>
+
+		
+
+		<h1 id="atan2って何">atan2って何？</h1>
+<p>JavaScriptには<code>Math</code>という組み込みオブジェクトの<code>atan2()</code>という関数が存在している。</p>
+<p>この<code>Math.atan2(y, x)</code>という関数の戻り値は、MDN[1]によると</p>
+<blockquote>
+<p>点 (0, 0) から点 (x,y) までの半直線と、正の x 軸の間の (−𝜋&lt;𝑥&lt;𝜋内の) ラジアン単位の角度</p>
+</blockquote>
+<p>らしい。</p>
+<p><strong>？</strong></p>
+<p>そもそも、atan2という言葉がいまいち分からない。<br>
+意味について調べるとWikipedia[2]より</p>
+<blockquote>
+<p>二つの引数を取るアークタンジェント</p>
+</blockquote>
+<p>ということらしい。</p>
+<h2 id="アークタンジェントって何">アークタンジェントって何？</h2>
+<p>簡単に言うとタンジェントの逆関数。範囲は、<code>−𝜋/2&lt;𝑥&lt;𝜋/2</code>。<br>
+理系大学生の数学駆け込み寺[3]によると</p>
+<blockquote>
+<p>𝑡𝑎𝑛𝑥  は 𝑥 という角度の直角三角形において、底辺と対辺の２辺の比を表していますが、𝑎𝑟𝑐𝑡𝑎𝑛𝑥 はこの２辺の比に対しての角度 𝑥 を考えています。</p>
+</blockquote>
+<p>とわかりやすく説明されている。つまりアークタンジェントは角度を求めることができる！</p>
+<h2 id="atan-と-atan2-の違いって何">atan と atan2 の違いって何？</h2>
+<p>よし、これでatan2を使えるようになった。と思って調べるともう一つ似たような関数が出てくる。それが<code>atan</code>。MDN[4]によると</p>
+<blockquote>
+<p>Math.atan() 関数は、引数として与えた数値のアークタンジェントをラジアン単位で返します。</p>
+</blockquote>
+<p>らしい。範囲は、<code>−𝜋/2&lt;𝑥&lt;𝜋/2</code>。</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"></th>
+<th style="text-align:left">atan(x)</th>
+<th style="text-align:left">atan2(y, x)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">引数</td>
+<td style="text-align:left">(数値)</td>
+<td style="text-align:left">(点のy座標, 点のx座標)</td>
+</tr>
+<tr>
+<td style="text-align:left">戻り値</td>
+<td style="text-align:left">与えられた数値のアークタンジェント (ラジアン単位)</td>
+<td style="text-align:left">点(0, 0)から点(x,y)までの半直線と、正のx軸の間の(−𝜋&lt;𝑥&lt;𝜋内の)ラジアン単位の角度</td>
+</tr>
+<tr>
+<td style="text-align:left">範囲</td>
+<td style="text-align:left">−𝜋/2&lt;𝑥&lt;𝜋/2</td>
+<td style="text-align:left">−𝜋&lt;𝑥&lt;𝜋</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p>したがって、atanの場合には、タンジェントを表す数値が判明している場合に利用でき、atan2の場合は点のx座標, 点のy座標が判明している場合に利用できる。</p>
+<h2 id="atan2ってどんなところで使えるの">atan2ってどんなところで使えるの？</h2>
+<p>例えば、3次元空間内で自分から見て相手がある角度の範囲内にいるときに、何か特別なアクションをさせる場合に使える。FPSでいうとショットガンの角度の有効範囲的な。</p>
+<p>具体的にどう使うかというと、自分から見て前後をy座標として左右をx座標とする。自分の座標をoとする。自分は相手が<code>𝜋/3&lt;𝑥&lt;2𝜋/3</code>にいるときにショットガンを撃つと相手に当たようにする。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">enableShotgun</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">y</span>, <span style="color:#a6e22e">x</span>) =&gt; {
+  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">enemyPosition</span> <span style="color:#f92672">=</span> Math.<span style="color:#a6e22e">atan2</span>(<span style="color:#a6e22e">y</span>, <span style="color:#a6e22e">x</span>)
+  <span style="color:#66d9ef">if</span>(Math.<span style="color:#a6e22e">PI</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">&lt;</span> <span style="color:#a6e22e">enemyPosition</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">enemyPosition</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> Math.<span style="color:#a6e22e">PI</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">3</span>) {
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+  } <span style="color:#66d9ef">else</span> {
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+  }
+}
+<span style="color:#a6e22e">enableShotgun</span>(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>); <span style="color:#75715e">// true
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">enableShotgun</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>); <span style="color:#75715e">// false
+</span></code></pre></div><h2 id="おわりに">おわりに</h2>
+<p>中々みかけない、atan2について触れてみた。これでみんなもatan2マスターだ！</p>
+<p>この記事は<a href="https://qiita.com/advent-calendar/2020/ipu">岩手県立大学 Advent Calendar 2020</a>の24日目です。</p>
+<h2 id="参考文献">参考文献</h2>
+<ul>
+<li>[1] Math.atan2() - JavaScript | MDN, <a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2">https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2</a></li>
+<li>[2] atan2 - Wikipedia, <a href="https://ja.wikipedia.org/wiki/Atan2">https://ja.wikipedia.org/wiki/Atan2</a></li>
+<li>[3] たったの1分でわかる！アークタンジェントの基本【微分・積分】 | 理系大学生の数学駆け込み寺, <a href="https://univ-study.net/arctan/">https://univ-study.net/arctan/</a></li>
+<li>[4] Math.atan() - JavaScript | MDN, <a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Math/atan">https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Math/atan</a></li>
+</ul>
+
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/blog/posts/history_of_iwatepu-programming-club/" class="left arrow">&#8592;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			
+			<span>
+			&copy; <time datetime="2020-12-24 14:42:18.87361 &#43;0900 JST m=&#43;0.257983500">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>
